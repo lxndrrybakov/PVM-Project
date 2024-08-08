@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Учет пробегов ПВМ МНЛЗ-3</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <img src="{{ url_for('static', filename='images/11450536bb7d00930a9497bc5efe46bd.jpg') }}" alt="Logo">
+            <img src="{{ url_for('static', filename='images/WhatsApp Image 2024-05-29 at 10.30.25 (1).jpg') }}" alt="Production">
+        </div>
+        <div class="header-title">
+            <h1>Учет пробегов ПВМ МНЛЗ-3</h1>
+            <div id="datetime" class="datetime"></div>
+        </div>
+        <div class="header-right">
+            <button class="stat-button" onclick="openStatistics()">Статистика пробегов</button>
+        </div>
+    </header>
+    <div class="sections-container">
+        <div class="section" id="inWorkSection">
+            <h2>В работе</h2>
+            <div class="machines-container" id="inWorkContainer">
+                {% for pvm, run in runs.items() %}
+                {% if pvm_status[pvm] == 'inWork' %}
+                <div class="machine {% if run >= 60000 %}red{% elif run >= 40000 %}yellow{% else %}green{% endif %}" id="pvm_{{ pvm }}" onclick="openMenu('{{ pvm }}', '{{ run }}')">
+                    <img src="{{ url_for('static', filename='images/machine.jpg') }}" alt="ПВМ {{ pvm }}">
+                    <div class="pvm-number">ПВМ №{{ pvm }}</div>
+                    <div class="pvm-run">Текущий пробег: {{ '%.1f'|format(run) }} тонн</div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="section" id="inStockSection">
+            <h2>На складе</h2>
+            <div class="machines-container" id="inStockContainer">
+                {% for pvm, run in runs.items() %}
+                {% if pvm_status[pvm] == 'inStock' %}
+                <div class="machine inStock {% if run >= 60000 %}red{% elif run >= 40000 %}yellow{% else %}green{% endif %}" id="pvm_{{ pvm }}" onclick="openMenu('{{ pvm }}', '{{ run }}')">
+                    <img src="{{ url_for('static', filename='images/machine.jpg') }}" alt="ПВМ {{ pvm }}">
+                    <div class="pvm-number">ПВМ №{{ pvm }}</div>
+                    <div class="pvm-run">Текущий пробег: {{ '%.1f'|format(run) }} тонн</div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="section" id="inRepairSection">
+            <h2>В ремонте</h2>
+            <div class="machines-container" id="inRepairContainer">
+                {% for pvm, run in runs.items() %}
+                {% if pvm_status[pvm] == 'inRepair' %}
+                <div class="machine inRepair {% if run >= 60000 %}red{% elif run >= 40000 %}yellow{% else %}green{% endif %}" id="pvm_{{ pvm }}" onclick="openMenu('{{ pvm }}', '{{ run }}')">
+                    <img src="{{ url_for('static', filename='images/machine.jpg') }}" alt="ПВМ {{ pvm }}">
+                    <div class="pvm-number">ПВМ №{{ pvm }}</div>
+                    <div class="pvm-run">Текущий пробег: {{ '%.1f'|format(run) }} тонн</div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="menu-popup" id="menuPopup">
+        <div class="menu-container">
+            <h2>Выбор действия для ПВМ №<span id="menuPvmNumber"></span></h2>
+            <input type="hidden" id="menu_pvm_number">
+            
+            <button class="menu-button" id="addRunButton" onclick="openSubMenu('addRun')">Добавить пробег</button>
+            <button class="menu-button" onclick="openMoveMenu()">Переместить</button>
+            <button class="menu-button" id="returnToWorkButton" onclick="returnToWork()">Вернуть в работу</button>
+            <button class="menu-button" onclick="resetRun()">Обнулить пробег</button>
+            <button type="button" class="btn cancel" onclick="closeMenu()">Закрыть</button>
+        </div>
+    </div>
+    <div class="form-popup" id="formPopup">
+        <form class="form-container" action="/add_run" method="POST">
+            <h2>Внести пробег для ПВМ №<span id="formPvmNumber"></span></h2>
+            <input type="hidden" id="pvm_number" name="pvm_number">
+            
+            <label for="num_blanks">Количество заготовок:</label>
+            <input type="number" id="num_blanks" name="num_blanks" required><br>
+            
+            <label for="blank_size">Размерность заготовки:</label>
+            <select id="blank_size" name="blank_size" required>
+                <option value="130">130</option>
+                <option value="150">150</option>
+            </select><br>
+            
+            <label for="tech_scrap">Тех обрезь (тонн):</label>
+            <input type="number" id="tech_scrap" name="tech_scrap" step="0.01" required><br>
+            
+            <button type="submit">Добавить пробег</button>
+            <button type="button" class="btn cancel" onclick="closeForm()">Закрыть</button>
+        </form>
+    </div>
+    <div class="form-popup" id="movePopup">
+        <div class="form-container">
+            <h2>Переместить ПВМ №<span id="movePvmNumber"></span></h2>
+            <input type="hidden" id="move_pvm_number">
+            
+            <label for="move_location">Выберите местоположение:</label>
+            <select id="move_location" name="move_location" required>
+                <option value="inStock">На склад</option>
+                <option value="inRepair">В ремонт</option>
+            </select><br>
+            
+            <button type="button" onclick="moveMachine()">Переместить</button>
+            <button type="button" class="btn cancel" onclick="closeMoveForm()">Закрыть</button>
+        </div>
+    </div>
+    <footer>
+        <p>Разработано Рыбаковым Александром. Отдел операционных улучшений. 2024</p>
+    </footer>
+</body>
+</html>

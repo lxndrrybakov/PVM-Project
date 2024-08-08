@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистика пробегов ПВМ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/statistics.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Статистика пробегов ПВМ</h1>
+        <div class="header-buttons">
+            <button onclick="exportToExcel()">Выгрузить в Excel</button>
+            <div class="dropdown">
+                <button class="dropbtn">Обнулить пробеги</button>
+                <div class="dropdown-content">
+                    <a href="#" onclick="resetMileage('day')">За день</a>
+                    <a href="#" onclick="resetMileage('week')">За неделю</a>
+                    <a href="#" onclick="resetMileage('month')">За месяц</a>
+                    <a href="#" onclick="resetMileage('all')">За все время</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="statistics-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ПВМ №</th>
+                        <th>Общий пробег (тонн)</th>
+                        <th>Пробег до ремонта (тонн)</th>
+                        <th>Пробег за плавку</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in summary %}
+                    <tr>
+                        <td>{{ item.pvm_number }}</td>
+                        <td>{{ '%.1f'|format(item.total_run) }}</td>
+                        <td>
+                            <ul>
+                                {% for log in item.repair_runs %}
+                                <li>{{ log }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                {% for log in item.series_runs %}
+                                <li>{{ log }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <footer>
+        <p>Разработано Рыбаковым Александром. Отдел операционных улучшений. 2024</p>
+    </footer>
+    <script>
+        function exportToExcel() {
+            window.location.href = "/export_excel";
+        }
+    </script>
+</body>
+</html>
+
+
+

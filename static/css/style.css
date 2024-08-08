@@ -1,0 +1,173 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left img {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.header-title {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.header-right {
+    margin-right: 10px;
+}
+
+.datetime {
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+}
+
+.sections-container {
+    display: flex;
+    justify-content: space-around;
+    margin: 1rem;
+}
+
+.section {
+    flex: 1;
+    margin: 0 10px;
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.section h2 {
+    text-align: center;
+}
+
+.machines-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.machine {
+    width: 150px;
+    height: 150px;
+    margin: 10px;
+    background-color: #eee;
+    border: 3px solid #ddd;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.machine img {
+    width: 80px;
+    height: 80px;
+}
+
+.machine .pvm-number {
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+}
+
+.machine .pvm-run {
+    font-size: 1rem;
+}
+
+.red {
+    border-color: red;
+}
+
+.yellow {
+    border-color: yellow;
+}
+
+.green {
+    border-color: green;
+}
+
+.menu-popup, .form-popup {
+    display: none;
+    position: fixed;
+    z-index: 9;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #ddd;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    border-radius: 10px;
+}
+
+.menu-container, .form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.menu-container h2, .form-container h2 {
+    margin-bottom: 20px;
+}
+
+.menu-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.menu-button:hover {
+    background-color: #0056b3;
+}
+
+.btn.cancel {
+    background-color: red;
+    color: white;
+}
+
+.btn.cancel:hover {
+    background-color: darkred;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+
